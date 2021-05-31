@@ -14,6 +14,7 @@ Inputile=/root/Automation_Project/.input-file-name
 input_script=.table.sh
 mainpath=/root/Automation_Project
 varpath=/var/www/html/inventory.html
+
 echo "=============================================================================================================="
 
 #Script updates the package information
@@ -89,4 +90,29 @@ else
 fi
 
 echo "============================================================================================================================================="
+sleep 1
+
+# Log entry display in  inventory.html  
+
+echo " ============== Log entry  in inventory.html ==============="
+
+/usr/bin/truncate -s 0 $Inputile
+
+cd $temp_path
+
+echo "httpd-logs $(date '+%d%m%Y-%H%M%S')  $(ls -lrth | tail -n1 | awk '{print $9}' | cut --complement -c -34) $(ls -lrht | tail -n1 |awk '{print $5}')" >> $Inputile
+
+cd $mainpath
+
+bash $input_script < $Inputile >> $varpath
+
+echo "============= Log entry successfully in inventory.html==============="
+
+echo "============================================================================================================================================="
+sleep 1
+
+# log file 7 day retation policy
+
+sudo /usr/bin/find /tmp -name "*.tar" -mtime +7 -delete >> /dev/null
+
 exit
